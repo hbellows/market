@@ -7,7 +7,6 @@ class Market
   def initialize(name)
     @name = name
     @vendors = []
-    @stocked_items = Hash.new(0)
   end
 
   def add_vendor(vendor)
@@ -33,12 +32,16 @@ class Market
   end
 
   def total_inventory
-    @vendors.each do |(item, quantity), vendor|
-      vendor.inventory.each do |item, quantity|
-        @stocked_items[item] += quantity
-      end
+    @vendors.inject(Hash.new(0)) do |stock, (vendor, quantity)|
+      find_inventory(vendor, quantity, stock)
+      stock
     end
-    @stocked_items
+  end
+
+  def find_inventory(vendor, quantity, stock)
+    vendor.inventory.each do |item, quantity|
+      stock[item] += quantity
+    end
   end
 
 end
