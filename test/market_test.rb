@@ -130,7 +130,8 @@ class MarketTest < Minitest::Test
     assert_equal expected, market.total_inventory
   end
 
-  def test_a_market_can_sell_in_stock_items
+  def test_a_market_can_determine_if_stock_exists_for_resale
+    # skip
     market = Market.new("South Pearl Street Farmers Market")
 
     vendor_1 = Vendor.new("Rocky Mountain Fresh")
@@ -147,6 +148,18 @@ class MarketTest < Minitest::Test
     market.add_vendor(vendor_1)
     market.add_vendor(vendor_2)
     market.add_vendor(vendor_3)
+
+    assert_equal false, market.available?("Peaches", 200)
+    assert_equal false, market.available?("Onions", 1)
+    assert_equal true, market.available?("Banana Nice Cream", 5)
+
+    market.sell("Peaches", 200)
+    market.sell("Onions", 1)
+    market.sell("Banana Nice Cream", 5)
+
+    assert_equal 45, vendor_2.check_stock("Banana Nice Cream")
+    assert_equal 0, vendor_1.check_stock("Peaches")
+    assert_equal 60, vendor_3.check_stock("Peaches")
   end
 
 end

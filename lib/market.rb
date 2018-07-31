@@ -44,4 +44,24 @@ class Market
     end
   end
 
+  def sell(item, quantity)
+    sellers = vendors_that_sell(item)
+    sellers.map do |vendor|
+      vendor.inventory.map do |item, amount|
+        require "pry"; binding.pry
+        if available(item, amount)
+          total_inventory[item] -= amount
+        end
+      end
+    end
+  end
+
+  def available?(item, quantity)
+    if total_inventory[item] < quantity
+      false
+    else
+      true
+    end
+  end
+
 end
